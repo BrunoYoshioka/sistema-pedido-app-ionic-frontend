@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { CategoriaService } from '../../services/domain/categoria.service';
 
 /**
  * Generated class for the CategoriasPage page.
@@ -15,11 +16,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CategoriasPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    public categoriaService: CategoriaService) {
   }
 
+  // Chamar o findAll (Chamar para testar se esta recuperando todas as categorias no api)
+
+
   ionViewDidLoad() {
-    console.log('ionViewDidLoad CategoriasPage');
+    // Chamada assincrona
+    this.categoriaService.findAll()
+    // na chamada assincrona, tem que se inscrever para fazer algo quando a resposta chegar
+      //.subscribe(this.f) // Essa é a famosa função "callback" ("f" é a função "callback")
+      .subscribe(response => { /* função anônima é também chamada de "arrow function" */
+        console.log(response);
+      }, /*resposta de sucesso*/ 
+      error => {
+        console.log(error);
+      });
   }
+
+  /* f(response){
+    console.log(response)
+  }*/
 
 }
