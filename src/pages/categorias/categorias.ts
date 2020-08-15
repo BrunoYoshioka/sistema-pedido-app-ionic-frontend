@@ -39,13 +39,6 @@ export class CategoriasPage {
       .subscribe(response => { /* função anônima é também chamada de "arrow function" */
         this.items = response;
       }, /*resposta de sucesso*/ 
-      error => {
-        console.log(error);
-      });
+      error => {});
   }
-
-  /* f(response){
-    console.log(response)
-  }*/
-
 }
