@@ -8,5 +8,13 @@
 </ion-header>
 
 <ion-content padding>
-<p>Página de Categorias</p>
+  <ion-list>
+    <button ion-item *ngFor="let item of items"> <!--Usando a diretiva do angular *ngFor, é capaz de ler uma coleção do controlador e repetir o elemento tantas vezes na coleção-->
+      <ion-thumbnail item-start>
+        <!--<img src="img/thumbnail-totoro.png">--> 
+        <img src="{{bucketUrl}}/cat{{item.id}}.jpg"> <!-- Resolvendo o carregamento das imagens -->
+      </ion-thumbnail>
+      <h2> {{ item.nome }} </h2>
+    </button>
+  </ion-list>
 </ion-content>
