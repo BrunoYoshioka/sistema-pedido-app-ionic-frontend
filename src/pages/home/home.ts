@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
 import { CredenciaisDTO } from '../../models/credenciais.dto';
+import { AuthService } from '../../services/auth.service';
 
 @IonicPage()
 @Component({
@@ -16,7 +17,10 @@ export class HomePage {
     senha: ""
   }
 
-  constructor(public navCtrl: NavController, public menu: MenuController) {
+  constructor(
+    public navCtrl: NavController, 
+    public menu: MenuController,
+    public auth: AuthService) {
 
   }
 
@@ -32,7 +36,12 @@ export class HomePage {
 
   // Quando for clicar no botão de enviar o formulário 
   login(){
-    console.log(this.creds); // antes de enviar a página, vou imprimir no console o valor da variável creds
-    this.navCtrl.setRoot('CategoriasPage');
+    this.auth.authenticate(this.creds) // chamar o método authenticate do AuthService
+    // escrever se vier com resposta com sucesso
+      .subscribe(response => {
+        console.log(response.headers.get('Authorization')); // imprimir no console para ver se realmente esta acessando este cabeçalho que vai vir com token
+        this.navCtrl.setRoot('CategoriasPage');
+      },
+      error => {});
   }
 }
