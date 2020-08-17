@@ -2,12 +2,14 @@ import { Injectable } from "@angular/core";
 import { CredenciaisDTO } from "../models/credenciais.dto";
 import { HttpClient } from "@angular/common/http";
 import { API_CONFIG } from "../config/api.config";
+import { LocalUser } from "../models/local_user";
+import { StorageService } from "./storage.service";
 
 
 @Injectable()
 export class AuthService {
 
-    constructor(public http: HttpClient) {
+    constructor(public http: HttpClient, public storage: StorageService) {
     }
 
     // Método para Fazer a autenticação
@@ -20,5 +22,19 @@ export class AuthService {
                 observe: 'response', // especificar essa requisição, que vai retornar do tipo resposta, dessa maneira terá o acesso ao header
                 responseType: 'text' // O tipo da resposta deve ser como texto e não JSON, evitar o parse do json
             });
+    }
+
+    // Método successfulLogin
+    successfulLogin(authorizationValue : string) {
+        let tok = authorizationValue.substring(7); // Cortar a palavra "Bearer " pegando só o token
+        let user : LocalUser = {
+            token: tok
+        };
+        this.storage.setLocalUser(user); // armazenando a variável instanciada (user) no localStorage
+    }
+
+    // Método logout
+    logout() {
+        this.storage.setLocalUser(null); // remover o usuário no storage
     }
 }

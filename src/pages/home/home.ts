@@ -39,7 +39,8 @@ export class HomePage {
     this.auth.authenticate(this.creds) // chamar o método authenticate do AuthService
     // escrever se vier com resposta com sucesso
       .subscribe(response => {
-        console.log(response.headers.get('Authorization')); // imprimir no console para ver se realmente esta acessando este cabeçalho que vai vir com token
+        // chamar successfulLogin se a autenticação ocorrer com sucesso
+        this.auth.successfulLogin(response.headers.get('Authorization')); // imprimir no console para ver se realmente esta acessando este cabeçalho que vai vir com token
         this.navCtrl.setRoot('CategoriasPage');
       },
       error => {});
