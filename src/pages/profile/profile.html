@@ -14,5 +14,10 @@
 </ion-header>
 
 <ion-content padding>
-{{ email }} <!-- mostrar o valor de email por meio de uma interpolação, pois irá exibir na página o email da classe controlador do profile.ts -->
+<!-- Mostrar a página de cliente -->
+  <ion-avatar>
+    <img class="circle" [src]="cliente?.imageUrl || 'assets/imgs/avatar-blank.png'">
+  </ion-avatar>
+  <h2 text-center>{{cliente?.nome}}</h2>
+  <p text-center>{{cliente?.email}}</p>
 </ion-content>
