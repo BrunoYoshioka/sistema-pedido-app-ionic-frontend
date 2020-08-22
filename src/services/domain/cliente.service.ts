@@ -12,14 +12,7 @@ export class ClienteService {
     }
 
     findByEmail(email: string) : Observable<ClienteDTO> {
-
-        // Provisoriamente, incluir o header Authorization
-        let token = this.storage.getLocalUser().token; // pegar o token armazenado no localStorage
-        let authHeader = new HttpHeaders({'Authorization': 'Bearer ' + token}); // passar o Cabeçalho
-
-        return this.http.get<ClienteDTO>(
-            `${API_CONFIG.baseUrl}/clientes/email?value=${email}`,
-            {'headers': authHeader}); // Acrescentar o cabeçalho na requisição
+        return this.http.get<ClienteDTO>(`${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
     }
 
     // fazer uma requisição get lá no bucket para pegar a imagem

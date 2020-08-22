@@ -11,7 +11,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     // Esse método vai interceptar uma requisição feito lá na API, e dentro aplicando alguma lógica
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log("Passou no interceptor")
+        //console.log("Passou no interceptor")
         return next.handle(req) // simplesmente continua a requisição
         .catch((error, caught) => { // se acontecer algum erro
 
