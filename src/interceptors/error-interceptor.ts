@@ -4,10 +4,14 @@ import {
 } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Rx'; // IMPORTANTE: IMPORT ATUALIZADO
+import { StorageService } from '../services/storage.service';
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+
+    constructor(public storage: StorageService) {
+    }
 
     // Esse método vai interceptar uma requisição feito lá na API, e dentro aplicando alguma lógica
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -28,8 +32,23 @@ export class ErrorInterceptor implements HttpInterceptor {
             console.log("Erro detectado pelo interceptor:");
             console.log(errorObj);
 
+            // acrescentar um tratamento específico para 403
+
+            // switch para testar várias possibilidades do status
+            switch(errorObj.status) {
+                case 403:
+                    this.handle403();
+                    break;
+            }
+
             return Observable.throw(errorObj); // propaga esse erro
         }) as any;
+    }
+
+    // função auxiliar 
+    handle403(){
+        // Limpeza do localStorage
+        this.storage.setLocalUser(null);
     }
 }
 

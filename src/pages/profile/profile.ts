@@ -38,7 +38,15 @@ export class ProfilePage {
           this.cliente = response;
           this.getImageIfExists();
         },
-        error => {});
+        error => {
+          if (error.status == 403){
+            // redirecionar para a página home
+            this.navCtrl.setRoot('HomePage');
+          }
+        });
+    }
+    else {
+      this.navCtrl.setRoot('HomePage');
     }
   }
 
