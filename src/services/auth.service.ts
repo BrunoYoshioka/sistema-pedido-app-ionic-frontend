@@ -27,6 +27,17 @@ export class AuthService {
             });
     }
 
+    refreshToken() {
+        return this.http.post(
+            `${API_CONFIG.baseUrl}/auth/refresh_token`,
+            {}, // o token é incluido automaticamente na requisição pelo interceptor
+            // Pegando o header da resposta
+            {
+                observe: 'response', // especificar essa requisição, que vai retornar do tipo resposta, dessa maneira terá o acesso ao header
+                responseType: 'text' // O tipo da resposta deve ser como texto e não JSON, evitar o parse do json
+            });
+    }
+
     // Método successfulLogin
     successfulLogin(authorizationValue : string) {
         let tok = authorizationValue.substring(7); // Cortar a palavra "Bearer " pegando só o token

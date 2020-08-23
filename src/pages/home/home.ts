@@ -34,6 +34,18 @@ export class HomePage {
     this.menu.swipeEnable(true); // voltar o menu
   }
 
+  // Ciclo de vida da app
+  ionViewDidEnter() {
+    this.auth.refreshToken() // chamar o método refreshToken do AuthService
+    // escrever se vier com resposta com sucesso
+      .subscribe(response => {
+        // chamar successfulLogin se a autenticação ocorrer com sucesso
+        this.auth.successfulLogin(response.headers.get('Authorization')); // imprimir no console para ver se realmente esta acessando este cabeçalho que vai vir com token
+        this.navCtrl.setRoot('CategoriasPage');
+      },
+      error => {});
+  }
+
   // Quando for clicar no botão de enviar o formulário 
   login(){
     this.auth.authenticate(this.creds) // chamar o método authenticate do AuthService
