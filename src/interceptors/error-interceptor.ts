@@ -5,12 +5,13 @@ import {
 
 import { Observable } from 'rxjs/Rx'; // IMPORTANTE: IMPORT ATUALIZADO
 import { StorageService } from '../services/storage.service';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-    constructor(public storage: StorageService) {
+    constructor(public storage: StorageService, public alertCtrl: AlertController) {
     }
 
     // Esse método vai interceptar uma requisição feito lá na API, e dentro aplicando alguma lógica
@@ -25,7 +26,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             }
             
             // Converter o texto para json
-            if(!errorObj) { // se o meu objeto de erro ele não tiver o campo status (Isso não é json)
+            if(!errorObj.status) { // se o meu objeto de erro ele não tiver o campo status (Isso não é json)
                 errorObj = JSON.parse(errorObj); // fazer receber o json dele mesmo
             }
 
@@ -36,9 +37,16 @@ export class ErrorInterceptor implements HttpInterceptor {
 
             // switch para testar várias possibilidades do status
             switch(errorObj.status) {
+                case 401:
+                    this.handle401();
+                    break;
+
                 case 403:
                     this.handle403();
                     break;
+
+                default: // tratando outros erros
+                    this.handleDefaultEror(errorObj);
             }
 
             return Observable.throw(errorObj); // propaga esse erro
@@ -49,6 +57,35 @@ export class ErrorInterceptor implements HttpInterceptor {
     handle403(){
         // Limpeza do localStorage
         this.storage.setLocalUser(null);
+    }
+
+    handle401(){
+        let alert = this.alertCtrl.create({
+            title: 'Erro 401: falha de autenticação',
+            message: 'Email ou senha incorretos',
+            enableBackdropDismiss: false, // sair do alert pelo botão
+            buttons: [
+                {
+                    text: 'Ok'
+                }
+            ]
+        }); // permitir criar objeto do alert
+        alert.present(); // Apresentar esse alert 
+    }
+
+    // tratando outros erros
+    handleDefaultEror(errorObj) {
+        let alert = this.alertCtrl.create({
+            title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
+            message: errorObj.message,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: 'Ok'
+                }
+            ]
+        });
+        alert.present();        
     }
 }
 
