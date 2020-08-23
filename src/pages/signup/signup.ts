@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validator, Validators } from '@angular/forms';
+import { CidadeService } from '../../services/domain/cidade.service';
+import { EstadoService } from '../../services/domain/estado.service';
+import { EstadoDTO } from '../../models/estado.dto';
+import { CidadeDTO } from '../../models/cidade.dto';
 
 @IonicPage()
 @Component({
@@ -11,11 +15,15 @@ export class SignupPage {
 
   // definir o FormGroup (Controla o formulário, fazendo validações de uma forma interessante)
   formGroup: FormGroup;
+  estados: EstadoDTO[]; // uma coleção de estados
+  cidades: CidadeDTO[]; // uma coleção de cidades
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    public formBuilder: FormBuilder) {
+    public formBuilder: FormBuilder,
+    public cidadeService: CidadeService,
+    public estadoService: EstadoService) {
 
       // instanciar definindo o FormGroup e pertence formBuilder
       this.formGroup = this.formBuilder.group({
@@ -35,6 +43,29 @@ export class SignupPage {
         estadoId : [null, [Validators.required]],
         cidadeId : [null, [Validators.required]]
       })
+  }
+
+  // para carregamento inicial dos estados e cidades
+  ionViewDidLoad() {
+    this.estadoService.findAll()
+      .subscribe(response => { // se ocorrer tudo ok
+        // armazenar os estados buscados
+        this.estados = response;
+        this.formGroup.controls.estadoId.setValue(this.estados[0].id); // pegar o primeiro elemento da lista e atribuir ele na lista estadoId do formulário
+        this.updateCidades(); // buscar as cidades correspondente ao estado selecionado
+      },
+      error => {});
+  }
+
+  // Evento para carregar as cidades quando um estado é selecionado
+  updateCidades() {
+    let estado_id = this.formGroup.value.estadoId; // pegar o cod do estado selecionado da lista do html do formulário
+    this.cidadeService.findAll(estado_id) // por estado selecionado
+      .subscribe(response => {
+        this.cidades = response;
+        this.formGroup.controls.cidadeId.setValue(null); // deselecionar a cidade selecionada no formulário
+      },
+      error => {});
   }
 
   signupUser() {
