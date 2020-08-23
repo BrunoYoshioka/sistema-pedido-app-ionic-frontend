@@ -41,4 +41,9 @@ export class CategoriasPage {
       }, /*resposta de sucesso*/ 
       error => {});
   }
+
+  // Método para abrir a página de produtos
+  showProdutos() {
+    this.navCtrl.push('ProdutosPage');
+  }
 }
