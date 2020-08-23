@@ -6,6 +6,7 @@ import {
 import { Observable } from 'rxjs/Rx'; // IMPORTANTE: IMPORT ATUALIZADO
 import { StorageService } from '../services/storage.service';
 import { AlertController } from 'ionic-angular/components/alert/alert-controller';
+import { FieldMessage } from '../models/fieldmessage';
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()
@@ -45,6 +46,11 @@ export class ErrorInterceptor implements HttpInterceptor {
                     this.handle403();
                     break;
 
+                // tratar especificamente o erro 422
+                case 422:
+                    this.handle422(errorObj);
+                    break;
+
                 default: // tratando outros erros
                     this.handleDefaultEror(errorObj);
             }
@@ -70,7 +76,21 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
             ]
         }); // permitir criar objeto do alert
-        alert.present(); // Apresentar esse alert 
+        alert.present(); // Apresentar esse alert
+    }
+
+    handle422(errorObj) { // Erros da API (backend)
+        let alert = this.alertCtrl.create({
+            title: 'Erro 422: Validação',
+            message: this.listErrors(errorObj.errors),
+            enableBackdropDismiss: false, // sair do alert pelo botão
+            buttons: [
+                {
+                    text: 'Ok'
+                }
+            ]
+        }); // permitir criar objeto do alert
+        alert.present(); // Apresentar esse alert
     }
 
     // tratando outros erros
@@ -86,6 +106,14 @@ export class ErrorInterceptor implements HttpInterceptor {
             ]
         });
         alert.present();        
+    }
+
+    private listErrors(messages : FieldMessage[]) : string {
+        let s : string = ''; // começar com string vazio
+        for (var i=0; i<messages.length; i++) { // percorrer todos os elementos da lista de mensagens
+            s = s + '<p><strong>' + messages[i].fieldName + "</strong>: " + messages[i].message + '</p>';
+        }
+        return s;
     }
 }
 
