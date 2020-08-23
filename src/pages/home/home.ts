@@ -57,4 +57,8 @@ export class HomePage {
       },
       error => {});
   }
+
+  signup() {
+    this.navCtrl.push('SignupPage'); // chamar empilhando a página SignupPage
+  }
 }
