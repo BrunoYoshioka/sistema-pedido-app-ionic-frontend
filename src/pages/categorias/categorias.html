@@ -9,7 +9,8 @@
 
 <ion-content padding>
   <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="showProdutos()"> <!--Usando a diretiva do angular *ngFor, é capaz de ler uma coleção do controlador e repetir o elemento tantas vezes na coleção-->
+    <!--acrescentar o código da categoria como parâmetro na chamada showProdutos-->
+    <button ion-item *ngFor="let item of items" (click)="showProdutos(item.id)"> <!--Usando a diretiva do angular *ngFor, é capaz de ler uma coleção do controlador e repetir o elemento tantas vezes na coleção-->
       <ion-thumbnail item-start>
         <!--<img src="img/thumbnail-totoro.png">--> 
         <img src="{{bucketUrl}}/cat{{item.id}}.jpg"> <!-- Resolvendo o carregamento das imagens -->

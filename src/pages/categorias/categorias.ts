@@ -43,7 +43,8 @@ export class CategoriasPage {
   }
 
   // Método para abrir a página de produtos
-  showProdutos() {
-    this.navCtrl.push('ProdutosPage');
+  showProdutos(categoria_id : string) {
+    // incluir o código da categoria como parâmetro da chamada de push
+    this.navCtrl.push('ProdutosPage', {categoria_id: categoria_id});
   }
 }
