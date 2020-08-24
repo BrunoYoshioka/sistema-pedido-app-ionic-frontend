@@ -23,9 +23,22 @@ export class ProdutosPage {
   ionViewDidLoad() {
     let categoria_id = this.navParams.get('categoria_id');
     this.produtoService.findByCategoria(categoria_id)
-      .subscribe(response => {
-        this.items = response['content'];
+      .subscribe(response => { // resposta ok dos produtos por categoria
+        this.items = response['content']; // chegar os produtos
+        this.loadImageUrls();
       },
       error => {});
-  };
+  }
+
+  // método para setar as URL's das imagens de miniatura dos produtos
+  loadImageUrls() {
+    for (var i=0; i<this.items.length; i++) { // percorrendo a lista de produtos
+      let item = this.items[i]; // pegar a refencia do produto 
+      this.produtoService.getSmallImageFromBucket(item.id)
+        .subscribe(response => { // se a imagem existir do bucket
+          item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`;
+        },
+        error => {});
+    }
+  }
 }
