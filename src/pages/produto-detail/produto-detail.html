@@ -20,5 +20,6 @@
     </ion-card-content>
   </ion-card>
 
-  <button ion-button block outline>Adicionar ao carrinho</button>
+  <!--Adicionar no carrinho o produto que tiver exibindo na página de detalhes do produto-->
+  <button ion-button block outline (click)="addToCart(item)">Adicionar ao carrinho</button>
 </ion-content>
