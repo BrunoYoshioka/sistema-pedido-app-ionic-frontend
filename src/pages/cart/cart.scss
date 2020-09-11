@@ -1,3 +1,6 @@
 page-cart {
-
+    .nolinebreak { // não quebra a linha
+        float: left;
+        padding-right: 10px; // margem a direita 10px
+    }
 }

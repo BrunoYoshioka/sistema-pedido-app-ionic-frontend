@@ -5,6 +5,7 @@ import { API_CONFIG } from "../config/api.config";
 import { LocalUser } from "../models/local_user";
 import { StorageService } from "./storage.service";
 import { JwtHelper } from 'angular2-jwt';
+import { CartService } from "./domain/cart.service";
 
 
 @Injectable()
@@ -12,7 +13,10 @@ export class AuthService {
 
     jwtHelper: JwtHelper = new JwtHelper();
 
-    constructor(public http: HttpClient, public storage: StorageService) {
+    constructor(
+        public http: HttpClient, 
+        public storage: StorageService,
+        public cartService: CartService) {
     }
 
     // Método para Fazer a autenticação
@@ -46,6 +50,7 @@ export class AuthService {
             email: this.jwtHelper.decodeToken(tok).sub // incluindo email extraído do token
         };
         this.storage.setLocalUser(user); // armazenando a variável instanciada (user) no localStorage
+        this.cartService.createOrClearCart(); // instrução para limpar o carrinho em caso de login
     }
 
     // Método logout
