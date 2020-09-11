@@ -27,6 +27,7 @@ export class MyApp {
       //  atualizar os itens do menu: Categorias e Profile 
       { title: 'Profile', component: 'ProfilePage' },
       { title: 'Categorias', component: 'CategoriasPage' },
+      { title: 'Carrinho', component: 'CartPage' },
       { title: 'Logout', component: ''}
     ];
 

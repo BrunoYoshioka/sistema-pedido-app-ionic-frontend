@@ -5,6 +5,9 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-fab top right edge>
+    <button navPush="CartPage" ion-fab mini><ion-icon name="cart"></ion-icon></button>
+  </ion-fab>
   <ion-list>
     <button ion-item *ngFor="let item of items" (click)="showDetail(item.id)"> <!--Em cada item da lista, fará um binding de evento click para o método showDetail()-->
       <ion-thumbnail item-start>
