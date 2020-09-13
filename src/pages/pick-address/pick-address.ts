@@ -58,7 +58,9 @@ export class PickAddressPage {
   // método nextPage - Mostrar o pedido no console
   nextPage(item: EnderecoDTO) {
     this.pedido.enderecoDeEntrega = {id: item.id}; // pegar o objeto id do pedido instanciado no ionViewDidLoad
-    console.log(this.pedido); // teste
+
+    // fazer a navegação para PaymentPage (Nota: enviar o objeto Pedido)
+    this.navCtrl.push('PaymentPage', {pedido: this.pedido}); // empilhar a página PaymentPage
   }
 
 }
