@@ -31,6 +31,7 @@ export class PaymentPage {
 
   nextPage() {
     this.pedido.pagamento = this.formGroup.value; // os dados que foram preenchidos na página html (payment.html)
-    console.log(this.pedido); //mostrar no console o pedido preenchido com o pagamento 
+    // Fazer a navegação e passar o pedido (setRoot e não push, porque a mesma página irá usar para confirmação que o pedido foi registrado, se tiver a seta voltar ficará incossistente pois o pedido terá sido registrado, e não pode voltar na tela de escolher o pagamento)
+    this.navCtrl.setRoot('OrderConfirmationPage', {pedido: this.pedido});
   }
 }
