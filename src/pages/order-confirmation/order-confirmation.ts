@@ -19,20 +19,20 @@ export class OrderConfirmationPage {
   cartItems: CartItem[];
   cliente: ClienteDTO;
   endereco: EnderecoDTO;
+  codpedido: string;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    public cartService: CartService,
     public clienteService: ClienteService,
+    public cartService: CartService,
     public pedidoService: PedidoService) {
-    
+
     this.pedido = this.navParams.get('pedido'); // carregar o objeto pedido, atribui como que foi enviado o parametro na página anterior
   }
 
   ionViewDidLoad() {
-    this.cartItems = this.cartService.getCart() //Método getCart() para pegar o carrinho
-    .items; // pega o itens dele
+    this.cartItems = this.cartService.getCart().items; //Método getCart() para pegar o carrinho e pega os itens dele
 
     // mostrar a tela de confirmação de pedido
     this.clienteService.findById(this.pedido.cliente.id) // faz a busca por id
@@ -45,32 +45,41 @@ export class OrderConfirmationPage {
         this.navCtrl.setRoot('HomePage');
       })
   }
-
   // método auxiliar para receber o id e a lista de endereços
   private findEndereco(id: string, list: EnderecoDTO[]) : EnderecoDTO {
     let position = list.findIndex(x => x.id == id);
     return list[position]; // retorna objeto da lista pelo id
   }
 
-  total() {
+  total() : number {
     return this.cartService.total();
-  }
+  } 
 
   // Voltar para a tela de carrinho
   back() {
     this.navCtrl.setRoot('CartPage');
   }
 
+  home() {
+    this.navCtrl.setRoot('CategoriasPage');
+  }
+
   checkout() {
     this.pedidoService.insert(this.pedido) // inserção do pedido
       .subscribe(response => {
         this.cartService.createOrClearCart(); // esvaziar o carrinho
-        console.log(response.headers.get('location')); // Testar se o location do novo recurso está sendo retornado
+        this.codpedido = this.extractId(response.headers.get('location')); // Extrair o id da url do pedido salvo e armazenar no codPedido
       },
       error => {
         if (error.status == 403) {
           this.navCtrl.setRoot('HomePage');
         }
       });
+  }
+
+  // Extração do id do location da url
+  private extractId(location : string) : string {
+    let position = location.lastIndexOf('/'); /* ele vai encontrar a ultima posição do substring que informar, que no caso é '/' */
+    return location.substring(position + 1, location.length);
   }
 }
