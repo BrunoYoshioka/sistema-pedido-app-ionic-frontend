@@ -15,8 +15,8 @@ export class ProdutoService {
   }
 
   // Listar os produtos pela categoria
-  findByCategoria(categoria_id : string) { // recebendo id da categoria
-    return this.http.get(`${API_CONFIG.baseUrl}/produtos/?categorias=${categoria_id}`); // obter get da API passando o id da categoria 
+  findByCategoria(categoria_id : string, page : number = 0, linesPerPage : number = 24) { // recebendo id da categoria
+    return this.http.get(`${API_CONFIG.baseUrl}/produtos/?categorias=${categoria_id}&page=${page}&linesPerPage=${linesPerPage}`); // obter get da API passando o id da categoria 
   }
 
   getSmallImageFromBucket(id : string) : Observable<any> {

@@ -12,7 +12,8 @@ import { ProdutoService } from '../../services/domain/produto.service';
 })
 export class ProdutosPage {
 
-  items : ProdutoDTO[]; // items será do tipo de coleção de produtos
+  items : ProdutoDTO[] = []; // items será do tipo de coleção de produtos, iniciando com a lista vazia
+  page: number = 0;
 
   constructor(
     public navCtrl: NavController, 
@@ -28,11 +29,15 @@ export class ProdutosPage {
   loadData() {
     let categoria_id = this.navParams.get('categoria_id');
     let loader = this.presentLoading();
-    this.produtoService.findByCategoria(categoria_id)
+    this.produtoService.findByCategoria(categoria_id, this.page, 10)
       .subscribe(response => { // resposta ok dos produtos por categoria
-        this.items = response['content']; // chegar os produtos
+        let start = this.items.length; // guardar numa variável start o tamanho que a lista tinha
+        this.items = this.items.concat(response['content']); // concatenar a nova resposta com o que já tinha anterior
+        let end = this.items.length - 1; // guardar numa variável end com o tamanho -1 (0 -> 10 : 0 a 9 | 10 -> 20 : 10 a 19 | 20 -> 30 : 20 a 29 .....)
         loader.dismiss();
-        this.loadImageUrls();
+        console.log(this.page);
+        console.log(this.items);
+        this.loadImageUrls(start, end);
       },
       error => {
         loader.dismiss();
@@ -40,8 +45,8 @@ export class ProdutosPage {
   }
 
   // método para setar as URL's das imagens de miniatura dos produtos
-  loadImageUrls() {
-    for (var i=0; i<this.items.length; i++) { // percorrendo a lista de produtos
+  loadImageUrls(start: number, end: number) {
+    for (var i=start; i<=end; i++) { // percorrendo a lista de produtos
       let item = this.items[i]; // pegar a refencia do produto 
       this.produtoService.getSmallImageFromBucket(item.id)
         .subscribe(response => { // se a imagem existir do bucket
@@ -66,9 +71,19 @@ export class ProdutosPage {
   }
 
   doRefresh(refresher) {
+    this.page = 0;
+    this.items = [];
     this.loadData();
     setTimeout(() => { // chamada assíncrona
-      refresher.complete(); // depois de certo tempo ele fecha o refresh
+      refresher.complete(); // depois de 1 segundo ele fecha o refresh
+    }, 1000);
+  }
+
+  doInfinite(infiniteScroll) { // quando chega no final da tela
+    this.page++; // incrementa a página
+    this.loadData(); // carrega mais dados
+    setTimeout(() => {
+      infiniteScroll.complete();
     }, 1000);
   }
 }
