@@ -6,15 +6,6 @@ import { ClienteService } from '../../services/domain/cliente.service';
 import { API_CONFIG } from '../../config/api.config';
 import { CameraOptions, Camera } from '@ionic-native/camera';
 
-/**
- * Generated class for the ProfilePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- * 
- * controlador da página de profile
- */
-
 @IonicPage()
 @Component({
   selector: 'page-profile',
@@ -34,7 +25,11 @@ export class ProfilePage {
     public camera: Camera) {
   }
 
-  ionViewDidLoad() { // evento para executar quando a página for carregada
+  ionViewDidLoad() {
+    this.loadData();
+  }
+
+  loadData() { // evento para executar quando a página for carregada
     let localUser = this.storage.getLocalUser(); // recuperar o usuário do localStorage
     if (localUser && localUser.email){
       this.clienteService.findByEmail(localUser.email) // buscar o cliente por email na requisição
@@ -78,5 +73,20 @@ export class ProfilePage {
      this.cameraOn = false; // desabilitar a camera
     }, (err) => {
     });
+  }
+
+  // Método enviar foto
+  sendPicture() {
+    this.clienteService.uploadPicture(this.picture) // enviar imagem para o aws - s3
+      .subscribe(response => {
+        this.picture = null;
+        this.loadData(); // recarregar os dados da página
+      },
+      error => {
+      });
+  }
+
+  cancel() {
+    this.picture = null;
   }
 }

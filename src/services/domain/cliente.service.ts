@@ -4,11 +4,15 @@ import { Observable } from "rxjs/Rx";
 import { ClienteDTO } from "../../models/cliente.dto";
 import { API_CONFIG } from "../../config/api.config";
 import { StorageService } from "../storage.service";
+import { ImageUtilService } from "../image-util.service";
 
 @Injectable()
 export class ClienteService {
     
-    constructor(public http: HttpClient, public storage: StorageService) {
+    constructor(
+        public http: HttpClient, 
+        public storage: StorageService,
+        public imageUtilService: ImageUtilService) {
     }
 
     findById(id: string) {
@@ -30,6 +34,21 @@ export class ClienteService {
         return this.http.post( // fazer um post
             `${API_CONFIG.baseUrl}/clientes`, // fazer endpoint
             obj, // passando obj
+            {
+                observe: 'response', // esperar uma resposta
+                responseType: 'text' // do tipo texto, pois o corpo vem vazio para evitar que deu erro de parse do JSON 
+            }
+        );
+    }
+
+    // método para enviar a foto (upload)
+    uploadPicture(picture) {
+        let pictureBlob = this.imageUtilService.dataUriToBlob(picture); // converter a imagem que estava na base 64 para blob
+        let formData : FormData = new FormData(); // instanciar objeto formdata
+        formData.set('file', pictureBlob, 'file.png');
+        return this.http.post( // fazer um post
+            `${API_CONFIG.baseUrl}/clientes/picture`, // fazer endpoint
+            formData, // passando obj
             {
                 observe: 'response', // esperar uma resposta
                 responseType: 'text' // do tipo texto, pois o corpo vem vazio para evitar que deu erro de parse do JSON 
